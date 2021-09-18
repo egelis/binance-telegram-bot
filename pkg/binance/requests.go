@@ -6,8 +6,8 @@ import (
 	"strconv"
 )
 
-func (c *Client) GetTradeHistory(pairs []string) (map[string][]TradePoint, error) {
-	trades := make(map[string][]TradePoint)
+func (c *Client) GetTradeHistory(pairs []string) (TradeHistory, error) {
+	trades := make(TradeHistory)
 
 	for _, pair := range pairs {
 		tradesList, err := c.binanceAPIClient.NewListTradesService().Symbol(pair).Do(context.Background())
@@ -28,13 +28,13 @@ func (c *Client) GetTradeHistory(pairs []string) (map[string][]TradePoint, error
 	return trades, nil
 }
 
-func (c *Client) GetBalance() (map[string]float64, error) {
+func (c *Client) GetBalance() (Balance, error) {
 	client, err := c.binanceAPIClient.NewGetAccountService().Do(context.Background())
 	if err != nil {
 		return nil, err
 	}
 
-	balance := make(map[string]float64)
+	balance := make(Balance)
 	for _, coin := range client.Balances {
 		free, err := strconv.ParseFloat(coin.Free, 64)
 

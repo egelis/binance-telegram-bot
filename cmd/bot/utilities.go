@@ -1,8 +1,28 @@
 package main
 
 import (
+	"bytes"
+	"fmt"
 	"github.com/egoreli/binance/pkg/binance"
+	"log"
 )
+
+type (
+	AveragePrice map[string]float64
+)
+
+func (ap AveragePrice) String() string {
+	var buf bytes.Buffer
+
+	for symbol, price := range ap {
+		_, err := fmt.Fprintf(&buf, "Average purchase price %v: %.8f\n", symbol, price)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	return buf.String()
+}
 
 func GetTokenPairs(tokens []string) []string {
 	var pairs []string
@@ -16,8 +36,8 @@ func GetTokenPairs(tokens []string) []string {
 	return pairs
 }
 
-func GetAveragePrices(trades map[string][]binance.TradePoint) map[string]float64 {
-	prices := make(map[string]float64)
+func GetAveragePrices(trades binance.TradeHistory) AveragePrice {
+	prices := make(AveragePrice)
 
 	for symbol, tradeList := range trades {
 		var moneySum, quantitySum, average float64

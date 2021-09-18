@@ -26,39 +26,24 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	printBalance(balance)
+	fmt.Println(balance)
 
 	tokens := []string{"KSM", "DOT", "BTC", "ADA", "XRP"}
 	pairs := GetTokenPairs(tokens)
 
 	trades, err := client.GetTradeHistory(pairs)
-	prices := GetAveragePrices(trades)
-	printAveragePrices(prices)
-
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	averagePrices := GetAveragePrices(trades)
+	fmt.Println(averagePrices)
 
 	rubCourse, err := client.GetRubCourse()
-	fmt.Printf("\nCourse: USDTRUB: %v\n", rubCourse)
-
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Printf("USDTRUB: %v\n", rubCourse)
 
 	fmt.Println("\n\nTotal time:", time.Since(start))
-}
-
-func printAveragePrices(prices map[string]float64) {
-	for symbol, price := range prices {
-		fmt.Printf("Average purchase price %v: %.8f\n", symbol, price)
-	}
-}
-
-func printBalance(balance map[string]float64) {
-	fmt.Println("Balance:")
-	for token, value := range balance {
-		fmt.Printf("%s: %f\n", token, value)
-	}
-	fmt.Println()
 }

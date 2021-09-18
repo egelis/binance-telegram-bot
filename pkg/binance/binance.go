@@ -1,20 +1,28 @@
 package binance
 
 import (
+	"bytes"
 	"context"
+	"fmt"
 	binanceAPI "github.com/adshao/go-binance/v2"
+	"log"
 )
 
-type TradePoint struct {
-	Price      float64
-	Quantity   float64
-	Commission float64
-	IsBuyer    bool
-}
+type (
+	Balance      map[string]float64
+	TradeHistory map[string][]TradePoint
 
-type Client struct {
-	binanceAPIClient *binanceAPI.Client
-}
+	TradePoint struct {
+		Price      float64
+		Quantity   float64
+		Commission float64
+		IsBuyer    bool
+	}
+
+	Client struct {
+		binanceAPIClient *binanceAPI.Client
+	}
+)
 
 func NewClient(apiKey, secretKey string) (*Client, error) {
 	newClient := binanceAPI.NewClient(apiKey, secretKey)
@@ -24,4 +32,22 @@ func NewClient(apiKey, secretKey string) (*Client, error) {
 	}
 
 	return &Client{binanceAPIClient: newClient}, nil
+}
+
+func (b Balance) String() string {
+	var buf bytes.Buffer
+
+	_, err := fmt.Fprintln(&buf, "Balance:")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for token, value := range b {
+		_, err = fmt.Fprintf(&buf, "%s: %f\n", token, value)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	return buf.String()
 }
