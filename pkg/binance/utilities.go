@@ -21,12 +21,15 @@ func getTradePoint(tpv3 *binanceAPI.TradeV3) (TradePoint, error) {
 		return TradePoint{}, err
 	}
 
+	commissionAsset := tpv3.CommissionAsset
+
 	isBuyer := tpv3.IsBuyer
 
 	return TradePoint{
-		Price:      price,
-		Quantity:   quantity,
-		Commission: commission,
-		IsBuyer:    isBuyer,
+		Price:           price,
+		Quantity:        quantity,
+		Commission:      commission,
+		CommissionAsset: commissionAsset,
+		IsBuyer:         isBuyer,
 	}, nil
 }

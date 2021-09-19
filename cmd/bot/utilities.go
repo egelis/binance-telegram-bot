@@ -3,7 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"github.com/egoreli/binance/pkg/binance"
+	"github.com/egelis/binance/pkg/binance"
 	"log"
 )
 

@@ -2,7 +2,6 @@ package binance
 
 import (
 	"context"
-	"fmt"
 	"strconv"
 )
 
@@ -53,7 +52,6 @@ func (c *Client) GetBalance() (Balance, error) {
 func (c *Client) GetRubCourse() (float64, error) {
 	priceStr, err := c.binanceAPIClient.NewListPricesService().Symbol("USDTRUB").Do(context.Background())
 	if err != nil {
-		fmt.Println(err)
 		return 0, err
 	}
 
@@ -63,4 +61,26 @@ func (c *Client) GetRubCourse() (float64, error) {
 	}
 
 	return price, nil
+}
+
+func (c *Client) GetTokenDividends(token string) ([]float64, error) {
+	dividends, err := c.binanceAPIClient.NewAssetDividendService().
+		Limit(500).
+		Asset(token).
+		Do(context.Background())
+	if err != nil {
+		return nil, err
+	}
+
+	res := make([]float64, 0, len(*dividends.Rows))
+	for _, row := range *dividends.Rows {
+		amount, err := strconv.ParseFloat(row.Amount, 64)
+		if err != nil {
+			return nil, err
+		}
+
+		res = append(res, amount)
+	}
+
+	return res, nil
 }

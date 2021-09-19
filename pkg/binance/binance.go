@@ -11,12 +11,14 @@ import (
 type (
 	Balance      map[string]float64
 	TradeHistory map[string][]TradePoint
+	Dividend     []float64
 
 	TradePoint struct {
-		Price      float64
-		Quantity   float64
-		Commission float64
-		IsBuyer    bool
+		Price           float64
+		Quantity        float64
+		Commission      float64
+		CommissionAsset string
+		IsBuyer         bool
 	}
 
 	Client struct {
