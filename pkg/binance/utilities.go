@@ -2,21 +2,21 @@ package binance
 
 import (
 	binanceAPI "github.com/adshao/go-binance/v2"
-	"strconv"
+	"github.com/shopspring/decimal"
 )
 
 func getTradePoint(tpv3 *binanceAPI.TradeV3) (TradePoint, error) {
-	price, err := strconv.ParseFloat(tpv3.Price, 64)
+	price, err := decimal.NewFromString(tpv3.Price)
 	if err != nil {
 		return TradePoint{}, err
 	}
 
-	quantity, err := strconv.ParseFloat(tpv3.Quantity, 64)
+	quantity, err := decimal.NewFromString(tpv3.Quantity)
 	if err != nil {
 		return TradePoint{}, err
 	}
 
-	commission, err := strconv.ParseFloat(tpv3.Commission, 64)
+	commission, err := decimal.NewFromString(tpv3.Commission)
 	if err != nil {
 		return TradePoint{}, err
 	}

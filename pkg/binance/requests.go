@@ -3,6 +3,8 @@ package binance
 import (
 	"context"
 	"strconv"
+
+	"github.com/shopspring/decimal"
 )
 
 func (c *Client) GetTradeHistory(pairs []string) (TradeHistory, error) {
@@ -35,13 +37,12 @@ func (c *Client) GetBalance() (Balance, error) {
 
 	balance := make(Balance)
 	for _, coin := range client.Balances {
-		free, err := strconv.ParseFloat(coin.Free, 64)
-
+		free, err := decimal.NewFromString(coin.Free)
 		if err != nil {
 			return nil, err
 		}
 
-		if free != 0 {
+		if !free.Equal(decimal.NewFromFloat(0)) {
 			balance[coin.Asset] = free
 		}
 	}
@@ -63,7 +64,7 @@ func (c *Client) GetRubCourse() (float64, error) {
 	return price, nil
 }
 
-func (c *Client) GetTokenDividends(token string) ([]float64, error) {
+func (c *Client) GetTokenDividends(token string) ([]decimal.Decimal, error) {
 	dividends, err := c.binanceAPIClient.NewAssetDividendService().
 		Limit(500).
 		Asset(token).
@@ -72,9 +73,9 @@ func (c *Client) GetTokenDividends(token string) ([]float64, error) {
 		return nil, err
 	}
 
-	res := make([]float64, 0, len(*dividends.Rows))
+	res := make([]decimal.Decimal, 0, len(*dividends.Rows))
 	for _, row := range *dividends.Rows {
-		amount, err := strconv.ParseFloat(row.Amount, 64)
+		amount, err := decimal.NewFromString(row.Amount)
 		if err != nil {
 			return nil, err
 		}

@@ -4,19 +4,21 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	binanceAPI "github.com/adshao/go-binance/v2"
+	"github.com/shopspring/decimal"
 	"log"
+
+	binanceAPI "github.com/adshao/go-binance/v2"
 )
 
 type (
-	Balance      map[string]float64
+	Balance      map[string]decimal.Decimal
 	TradeHistory map[string][]TradePoint
-	Dividend     []float64
+	Dividend     []decimal.Decimal
 
 	TradePoint struct {
-		Price           float64
-		Quantity        float64
-		Commission      float64
+		Price           decimal.Decimal
+		Quantity        decimal.Decimal
+		Commission      decimal.Decimal
 		CommissionAsset string
 		IsBuyer         bool
 	}

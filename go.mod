@@ -6,6 +6,7 @@ require (
 	github.com/adshao/go-binance/v2 v2.3.1
 	github.com/go-telegram-bot-api/telegram-bot-api v4.6.4+incompatible
 	github.com/joho/godotenv v1.3.0
+	github.com/shopspring/decimal v1.2.0
 )
 
 require (

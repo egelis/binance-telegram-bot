@@ -4,11 +4,12 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/egelis/binance/pkg/binance"
+	"github.com/shopspring/decimal"
 	"log"
 )
 
 type (
-	AveragePrice map[string]float64
+	AveragePrice map[string]decimal.Decimal
 )
 
 func (ap AveragePrice) String() string {
@@ -40,15 +41,15 @@ func GetAveragePrices(trades binance.TradeHistory) AveragePrice {
 	prices := make(AveragePrice)
 
 	for symbol, tradeList := range trades {
-		var moneySum, quantitySum, average float64
+		var moneySum, quantitySum, average decimal.Decimal
 		for _, point := range tradeList {
 			if point.IsBuyer {
-				moneySum += point.Quantity * point.Price
-				quantitySum += point.Quantity
-				average = moneySum / quantitySum
+				moneySum = moneySum.Add(point.Quantity.Mul(point.Price))
+				quantitySum = quantitySum.Add(point.Quantity)
+				average = moneySum.Div(quantitySum)
 			} else {
-				quantitySum -= point.Quantity
-				moneySum = average * quantitySum
+				quantitySum = quantitySum.Sub(point.Quantity)
+				moneySum = average.Mul(quantitySum)
 			}
 		}
 
