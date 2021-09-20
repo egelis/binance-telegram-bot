@@ -41,7 +41,7 @@ func printTokensStatistic(c *binance.Client) {
 	}
 
 	pairs := GetTokenPairs(TOKENS)
-	tradeHistory, err := c.GetTradeHistory(pairs)
+	tradeHistory, err := c.GetTradeHistoryForPairs(pairs)
 	if err != nil {
 		log.Fatal(err)
 	}

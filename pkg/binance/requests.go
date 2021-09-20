@@ -7,23 +7,31 @@ import (
 	"github.com/shopspring/decimal"
 )
 
-func (c *Client) GetTradeHistory(pairs []string) (TradeHistory, error) {
-	trades := make(TradeHistory)
+func (c *Client) GetTradeHistoryForPair(pair string) ([]TradePoint, error) {
+	tradesList, err := c.binanceAPIClient.NewListTradesService().Symbol(pair).Do(context.Background())
+	if err != nil {
+		return nil, err
+	}
 
-	for _, pair := range pairs {
-		tradesList, err := c.binanceAPIClient.NewListTradesService().Symbol(pair).Do(context.Background())
+	var res []TradePoint
+	for _, tpv3 := range tradesList {
+		point, err := getTradePoint(tpv3)
 		if err != nil {
 			return nil, err
 		}
 
-		for _, tpv3 := range tradesList {
-			point, err := getTradePoint(tpv3)
-			if err != nil {
-				return nil, err
-			}
+		res = append(res, point)
+	}
 
-			trades[tpv3.Symbol] = append(trades[tpv3.Symbol], point)
-		}
+	return res, nil
+}
+
+func (c *Client) GetTradeHistoryForPairs(pairs []string) (TradeHistory, error) {
+	trades := make(TradeHistory)
+
+	for _, pair := range pairs {
+		tradePoints, _ := c.GetTradeHistoryForPair(pair)
+		trades[pair] = tradePoints
 	}
 
 	return trades, nil

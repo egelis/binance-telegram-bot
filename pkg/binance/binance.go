@@ -47,7 +47,7 @@ func (b Balance) String() string {
 	}
 
 	for token, value := range b {
-		_, err = fmt.Fprintf(&buf, "%s: %f\n", token, value)
+		_, err = fmt.Fprintf(&buf, "%s: %v\n", token, value)
 		if err != nil {
 			log.Fatal(err)
 		}

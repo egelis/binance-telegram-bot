@@ -16,7 +16,7 @@ func (ap AveragePrice) String() string {
 	var buf bytes.Buffer
 
 	for symbol, price := range ap {
-		_, err := fmt.Fprintf(&buf, "Average purchase price %v: %.8f\n", symbol, price)
+		_, err := fmt.Fprintf(&buf, "Average purchase price %v: %v\n", symbol, price)
 		if err != nil {
 			log.Fatal(err)
 		}
