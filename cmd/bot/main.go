@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
+	"github.com/egelis/binance/pkg/exchange/binance"
 	"log"
 	"os"
 	"time"
 
-	"github.com/egelis/binance/pkg/binance"
 	"github.com/joho/godotenv"
 )
 
@@ -26,7 +26,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	printTokensStatistic(client)
+	GetTokensStatistic(client)
 
 	fmt.Println("\n\nTotal time:", time.Since(start))
 }

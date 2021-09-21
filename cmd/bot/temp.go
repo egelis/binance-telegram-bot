@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/egelis/binance/pkg/binance"
+	"github.com/egelis/binance/pkg/exchange/binance"
 	"github.com/shopspring/decimal"
 	"log"
 )
@@ -34,19 +34,11 @@ func getStakingAmount(tradeHistory []binance.TradePoint, divSum decimal.Decimal,
 	}
 }
 
-func printTokensStatistic(c *binance.Client) {
+func GetTokensStatistic(c *binance.Client) {
 	balance, err := c.GetBalance()
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	pairs := GetTokenPairs(TOKENS)
-	tradeHistory, err := c.GetTradeHistoryForPairs(pairs)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	averagePrice := GetAveragePrices(tradeHistory)
 
 	for _, token := range TOKENS {
 		dividends, err := c.GetTokenDividends(token)
@@ -59,18 +51,22 @@ func printTokensStatistic(c *binance.Client) {
 			divSum = divSum.Add(div)
 		}
 
-		tokenUSDT := token + "USDT"
-
-		staking := getStakingAmount(tradeHistory[tokenUSDT], divSum, balance[token])
-
-		currentPrice, err := c.GetTokenPrice(tokenUSDT)
+		tradeHistory, err := c.GetPairTradeHistory(token + "USDT")
 		if err != nil {
 			log.Fatal(err)
 		}
 
+		staking := getStakingAmount(tradeHistory, divSum, balance[token])
+
+		currentPrice, err := c.GetTokenPrice(token + "USDT")
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		averagePrice := GetAveragePrice(tradeHistory)
 		var profit decimal.Decimal
-		if !averagePrice[tokenUSDT].Equal(decimal.NewFromFloat(0)) {
-			profit = currentPrice.Div(averagePrice[tokenUSDT])
+		if !averagePrice.Equal(decimal.NewFromFloat(0)) {
+			profit = currentPrice.Div(averagePrice)
 		} else {
 			profit = decimal.NewFromFloat(0)
 		}
@@ -85,9 +81,21 @@ func printTokensStatistic(c *binance.Client) {
 			token,
 			balance[token].StringFixed(8),
 			staking.StringFixed(8),
-			averagePrice[tokenUSDT].StringFixed(2),
+			averagePrice.StringFixed(2),
 			divSum.StringFixed(8),
 			currentPrice.StringFixed(2),
 			profit.StringFixed(4))
 	}
 }
+
+/*
+return TokenStatistic{
+Token:        token,
+OnBalance:    balance[token],
+InStaking:    staking,
+Average:      averagePrice,
+Dividends:    divSum,
+CurrentPrice: currentPrice,
+Profit:       profit,
+}
+*/
