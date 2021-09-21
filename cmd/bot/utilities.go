@@ -9,10 +9,10 @@ import (
 )
 
 type (
-	AveragePrice map[string]decimal.Decimal
+	AveragePrices map[string]decimal.Decimal
 )
 
-func (ap AveragePrice) String() string {
+func (ap AveragePrices) String() string {
 	var buf bytes.Buffer
 
 	for symbol, price := range ap {
@@ -37,8 +37,8 @@ func GetTokenPairs(tokens []string) []string {
 	return pairs
 }
 
-func GetAveragePrices(trades binance.TradeHistory) AveragePrice {
-	prices := make(AveragePrice)
+func GetAveragePrices(trades binance.TradeHistory) AveragePrices {
+	prices := make(AveragePrices)
 
 	for symbol, tradeList := range trades {
 		var moneySum, quantitySum, average decimal.Decimal

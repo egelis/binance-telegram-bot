@@ -59,17 +59,35 @@ func printTokensStatistic(c *binance.Client) {
 			divSum = divSum.Add(div)
 		}
 
-		staking := getStakingAmount(tradeHistory[token+"USDT"], divSum, balance[token])
+		tokenUSDT := token + "USDT"
 
-		fmt.Printf("Token: %s\n"+
-			"Balance: %v\n"+
-			"In staking: %v\n"+
-			"Average: %v\n"+
-			"Dividends: %v\n\n",
+		staking := getStakingAmount(tradeHistory[tokenUSDT], divSum, balance[token])
+
+		currentPrice, err := c.GetTokenPrice(tokenUSDT)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		var profit decimal.Decimal
+		if !averagePrice[tokenUSDT].Equal(decimal.NewFromFloat(0)) {
+			profit = currentPrice.Div(averagePrice[tokenUSDT])
+		} else {
+			profit = decimal.NewFromFloat(0)
+		}
+
+		fmt.Printf("Token:         %s\n"+
+			"Balance:       %v\n"+
+			"In staking:    %v\n"+
+			"Average:       %v\n"+
+			"Dividends:     %v\n"+
+			"Current price: %v\n"+
+			"Profit:        %v\n\n",
 			token,
 			balance[token].StringFixed(8),
 			staking.StringFixed(8),
-			averagePrice[token+"USDT"].StringFixed(2),
-			divSum.StringFixed(8))
+			averagePrice[tokenUSDT].StringFixed(2),
+			divSum.StringFixed(8),
+			currentPrice.StringFixed(2),
+			profit.StringFixed(4))
 	}
 }
