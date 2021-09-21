@@ -93,3 +93,19 @@ func (c *Client) GetTokenDividends(token string) ([]decimal.Decimal, error) {
 
 	return res, nil
 }
+
+func (c *Client) GetTokenPrice(symbol string) (decimal.Decimal, error) {
+	tokenPrice, err := c.binanceAPIClient.NewListPricesService().
+		Symbol(symbol).
+		Do(context.Background())
+	if err != nil {
+		return decimal.Decimal{}, err
+	}
+
+	res, err := decimal.NewFromString(tokenPrice[0].Price)
+	if err != nil {
+		return decimal.Decimal{}, err
+	}
+
+	return res, err
+}

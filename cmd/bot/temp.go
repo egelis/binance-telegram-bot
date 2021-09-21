@@ -20,7 +20,7 @@ func getStakingAmount(tradeHistory []binance.TradePoint, divSum decimal.Decimal,
 			amount = amount.Add(tradePoint.Quantity)
 			amount = amount.Sub(tradePoint.Commission)
 		} else {
-			//amount -= tradePoint.Quantity
+			amount = amount.Sub(tradePoint.Quantity)
 		}
 	}
 
@@ -66,6 +66,10 @@ func printTokensStatistic(c *binance.Client) {
 			"In staking: %v\n"+
 			"Average: %v\n"+
 			"Dividends: %v\n\n",
-			token, balance[token], staking, averagePrice[token+"USDT"], divSum)
+			token,
+			balance[token].StringFixed(8),
+			staking.StringFixed(8),
+			averagePrice[token+"USDT"].StringFixed(2),
+			divSum.StringFixed(8))
 	}
 }
