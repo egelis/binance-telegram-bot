@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/egelis/binance/pkg/exchange/binance"
+	"github.com/egelis/binance/pkg/portfolio"
 	"log"
 	"os"
-	"time"
 
+	"github.com/egelis/binance/pkg/exchange/binance"
 	"github.com/joho/godotenv"
 )
 
@@ -15,18 +15,16 @@ var (
 )
 
 func main() {
-	start := time.Now()
-
 	if err := godotenv.Load(); err != nil {
 		log.Fatal("No .env file found")
 	}
 
-	client, err := binance.NewClient(os.Getenv("API_KEY"), os.Getenv("SECRET_KEY"))
+	binanceExchange, err := binance.NewClient(os.Getenv("API_KEY"), os.Getenv("SECRET_KEY"))
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	GetTokensStatistic(client)
+	binancePortfolio := portfolio.NewPortfolio(binanceExchange, TOKENS)
 
-	fmt.Println("\n\nTotal time:", time.Since(start))
+	fmt.Println(binancePortfolio.GetTradeHistoryForPair("DOTUSDT"))
 }
