@@ -1,17 +1,16 @@
 package main
 
 import (
-	"github.com/egelis/binance/pkg/portfolio"
+	"fmt"
 	"log"
 	"os"
 
 	"github.com/egelis/binance/pkg/exchange/binance"
+	"github.com/egelis/binance/pkg/portfolio"
 	"github.com/joho/godotenv"
 )
 
-var (
-	TOKENS = []string{"KSM", "DOT", "BTC", "ADA", "XRP", "ATOM"}
-)
+var TOKENS = []string{"KSM", "DOT", "BTC", "ADA", "XRP", "ATOM"}
 
 func main() {
 	if err := godotenv.Load(); err != nil {
@@ -23,8 +22,13 @@ func main() {
 		log.Fatal(err)
 	}
 
-	binancePortfolio := portfolio.NewPortfolio(binanceExchange, TOKENS)
+	binancePortfolio := portfolio.NewPortfolio(binanceExchange)
 
-	//fmt.Println(binancePortfolio.GetTradeHistoryForPair("DOTUSDT"))
-	binancePortfolio.GetTokenListStatistic()
+	fmt.Println(binancePortfolio.GetTradeHistoryForPair("BTCUSDT"))
+
+	fmt.Println()
+
+	for _, token := range TOKENS {
+		fmt.Println(binancePortfolio.GetTokenStatistic(token))
+	}
 }
