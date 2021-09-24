@@ -39,15 +39,15 @@ func (p *Portfolio) GetTokenStatistic(token string) string {
 		"Токен:            %s\n"+
 			"Баланс:           %v\n"+
 			"В стейкинге:      %v\n"+
-			"Ср. цена покупки: %v USDT\n"+
 			"Дивиденды:        %v\n"+
-			"Текущая цена:     %v\n"+
+			"Ср. цена покупки: %v USDT\n"+
+			"Текущая цена:     %v USDT\n"+
 			"Профит:           %s (%s)\n",
 		token,
 		stat.Balance.StringFixed(8),
 		stat.InStaking.StringFixed(8),
-		stat.AveragePrice.StringFixed(2),
 		stat.Dividends.StringFixed(8),
+		stat.AveragePrice.StringFixed(2),
 		stat.CurrentPrice.StringFixed(2),
 		getProfitPercents(stat.Profit),
 		getProfitUSD(stat.Balance, stat.InStaking, stat.AveragePrice, stat.CurrentPrice))
