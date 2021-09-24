@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/egelis/binance/pkg/portfolio"
 	"log"
 	"os"
@@ -26,5 +25,6 @@ func main() {
 
 	binancePortfolio := portfolio.NewPortfolio(binanceExchange, TOKENS)
 
-	fmt.Println(binancePortfolio.GetTradeHistoryForPair("DOTUSDT"))
+	//fmt.Println(binancePortfolio.GetTradeHistoryForPair("DOTUSDT"))
+	binancePortfolio.GetTokenListStatistic()
 }
